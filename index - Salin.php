@@ -1,3 +1,40 @@
+<?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'PHPMailer/src/Exception.php';
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
+
+if(isset($_POST['send'])){
+    $name = htmlentities($_POST['name']);
+    $email = htmlentities($_POST['email']);
+    $subject = htmlentities($_POST['subject']);
+    $message = htmlentities($_POST['message']);
+
+    $mail = new PHPMailer(true);
+    try {
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'ptravyy@gmail.com'; // Your G-Mail Address
+        $mail->Password = 'cctrenzylubjwpwq'; // Your Gmail Password or App Password
+        $mail->Port = 587; // Use 587 for TLS or 465 for SSL
+        $mail->SMTPSecure = 'tls'; // Use 'tls' or 'ssl'
+        $mail->isHTML(true);
+        $mail->setFrom($email, $name);
+        $mail->addAddress('ptravyy@gmail.com');
+        $mail->Subject = "$email ($subject)";
+        $mail->Body = $message;
+        $mail->send();
+        header("Location: index.php?email_sent=1"); // Change 'contact.php' to 'index.php'
+        exit(); // Make sure to exit after header redirection
+    } catch (Exception $e) {
+        echo "Pesan tidak dapat dikirim!. Mailer Error: {$mail->ErrorInfo}";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
